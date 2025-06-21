@@ -13,6 +13,7 @@ class Rechner:
             "betrag": betrag,
             "bezeichnung": bezeichnung,
             "date": datum
+
         })
         self.save_data()
 
@@ -40,3 +41,19 @@ class Rechner:
                 self.transactions = json.load(f)
         except FileNotFoundError:
             self.transactions = []
+
+    def get_monthly_summary(self, year, month):
+        einkommen = 0
+        ausgaben = 0
+        for t in self.transactions:
+            date = datetime.strptime(t["date"], "%d.%m.%Y")
+            if date.year == year and date.month == month:
+                if t["type"] == "einkommen":
+                    einkommen += t["betrag"]
+                elif t["type"] == "ausgabe":
+                    ausgaben += t["betrag"]
+        return {
+            "Einnahmen": einkommen,
+            "Ausgaben": ausgaben,
+            "Saldo": einkommen - ausgaben
+        }
