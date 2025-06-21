@@ -31,9 +31,15 @@ class Rechner:
         ausgaben = sum(t["betrag"] for t in self.transactions if t["type"] == "ausgabe")
         return einkommen - ausgaben
 
+    def get_total_income(self):
+        return sum(t["betrag"] for t in self.transactions if t["type"] == "einkommen")
+
+    def get_total_expense(self):
+        return sum(t["betrag"] for t in self.transactions if t["type"] == "ausgabe")
+
     def save_data(self):
         with open("transactions.json","w") as f:
-            json.dump(self.transactions, f, indent=4)
+            json.dump(self.transactions, f)
 
     def load_data(self):
         try:
