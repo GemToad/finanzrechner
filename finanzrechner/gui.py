@@ -1,5 +1,6 @@
 import tkinter as tk
 from rechner import Rechner
+from tkinter import ttk
 
 rechner = Rechner()
 
@@ -10,6 +11,22 @@ class FinanzRechnerGUI():
         self.root = tk.Tk()
         self.root.geometry("800x600")
         self.root.title("Finanzrechner")
+
+        self.income_label = tk.Label(self.root, text="Einnahmen", font=("Arial", 14, "bold"))
+        self.income_label.pack()
+        self.income_tree = ttk.Treeview(self.root, columns=("Betrag","Bezeichnung","Datum"), show="headings")
+        self.income_tree.heading("Betrag", text="Betrag (€)")
+        self.income_tree.heading("Bezeichnung", text="Bezeichnung")
+        self.income_tree.heading("Datum", text="Datum")
+        self.income_tree.pack()
+
+        self.expense_label = tk.Label(self.root, text="Ausgaben", font=("Arial", 14, "bold"))
+        self.expense_label.pack()
+        self.expense_tree = ttk.Treeview(self.root, columns=("Betrag", "Bezeichnung", "Datum"), show="headings")
+        self.expense_tree.heading("Betrag", text="Betrag (€)")
+        self.expense_tree.heading("Bezeichnung", text="Bezeichnung")
+        self.expense_tree.heading("Datum", text="Datum")
+        self.expense_tree.pack()
 
         self.kontostand_label = tk.Label(self.root, text=f"Kontostand: {rechner.berechne_kontostand()} €")
         self.kontostand_label.pack()
@@ -61,6 +78,7 @@ class FinanzRechnerGUI():
         bezeichnung = self.einnahme_bezeichnung_entry.get()
         datum = self.einnahme_datum_entry.get()
         rechner.add_einnahme(betrag, bezeichnung, datum)
+        self.income_tree.insert("", "end", values=(betrag, bezeichnung, datum))
         self.update_kontostand()
         self.einnahme_betrag_entry.delete(0, tk.END)
         self.einnahme_bezeichnung_entry.delete(0, tk.END)
@@ -74,10 +92,12 @@ class FinanzRechnerGUI():
         bezeichnung = self.ausgabe_bezeichnung_entry.get()
         datum = self.ausgabe_datum_entry.get()
         rechner.add_ausgabe(betrag, bezeichnung, datum)
+        self.income_tree.insert("", "end", values=(betrag, bezeichnung, datum))
         self.update_kontostand()
         self.ausgabe_betrag_entry.delete(0, tk.END)
         self.ausgabe_bezeichnung_entry.delete(0, tk.END)
         self.ausgabe_datum_entry.delete(0, tk.END)
+
 
     def update_kontostand(self):
         self.kontostand_label.config(text=f"Kontostand: {rechner.berechne_kontostand()}")
